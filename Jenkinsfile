@@ -4,8 +4,7 @@ pipeline {
         stage('Clone') {
             steps {
                 script {
-                    git branch: 'main'
-                    url: 'https://github.com/hiagomoa/golang-api'
+                    git branch: 'main', url: 'https://github.com/hiagomoa/golang-api'
                 }
             }
         }
