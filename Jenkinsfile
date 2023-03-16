@@ -20,8 +20,9 @@ pipeline {
             steps {
                 sh '''
                     echo "Testing..."
-                    docker run -it hiagomoa/golang-api:${BUILD_NUMBER}
-                    curl localhost:8080
+                    docker run -d -p 3000:3000 hiagomoa/golang-api:${BUILD_NUMBER}
+                    curl localhost:3000
+                    docker rm -f $(docker ps -aq)
                 '''
             }
         }
