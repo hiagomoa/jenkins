@@ -12,7 +12,7 @@ pipeline {
             steps {
                 sh '''
                     echo "Building..."
-                    docker build -t hiagomoa/golang-api:${BUILD_NUMBER}
+                    docker build -t hiagomoa/golang-api:${BUILD_NUMBER} .
                 '''
             }
         }
