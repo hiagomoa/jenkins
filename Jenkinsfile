@@ -20,7 +20,7 @@ pipeline {
         stage('Clone') {
             steps {
                 script {
-                    echo "O valor do Choice: ${params.CHOICE}/ ${params.Version}"
+                    echo "O valor do Choice: ${params.CHOICE}"
                     git branch: 'main', url: 'https://github.com/hiagomoa/golang-api'
                 }
             }
