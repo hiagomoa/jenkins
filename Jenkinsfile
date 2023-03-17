@@ -1,8 +1,8 @@
 pipeline {
     agent any
     parameters {
-        choice(name: 'ENVIRONMENT', choices: ['DEV', 'QA', 'PROD'], description: 'Select the environment to deploy')
-        gitParameter(name: 'GIT_BRANCH', useRepository:'https://github.com/hiagomoa/golang-api', type: 'PT_BRANCH', defaultValue: 'main', description: 'Select the branch to deploy')
+        choice(name: 'ENVIRONMENT', choices: ['https://github.com/hiagomoa/golang-api', 'QA', 'PROD'], description: 'Select the environment to deploy')
+        gitParameter(name: 'GIT_BRANCH', useRepository:"${params.ENVIRONMENT}", type: 'PT_BRANCH', defaultValue: 'main', description: 'Select the branch to deploy')
     }
     stages {
         stage('Clone') {
