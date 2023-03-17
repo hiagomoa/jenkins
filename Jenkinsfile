@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    parameter{
+    parameters {
         choice(name: 'ENVIRONMENT', choices: ['DEV', 'QA', 'PROD'], description: 'Select the environment to deploy')
         gitParameter(name: 'GIT_BRANCH', useRepository:'https://github.com/hiagomoa/golang-api', type: 'PT_BRANCH', defaultValue: 'main', description: 'Select the branch to deploy')
     }
