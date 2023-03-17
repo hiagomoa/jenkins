@@ -1,6 +1,7 @@
 pipeline {
     agent any
     parameters {
+    choice choices: ['one', 'two'], description: Teste, name: 'CHOICE'
     gitParameter(
       branch: '',
       branchFilter: ".*",
@@ -19,7 +20,7 @@ pipeline {
         stage('Clone') {
             steps {
                 script {
-                    echo "${params.Version}"
+                    echo "O valor do Choice: ${params.CHOICE}/ ${params.Version}"
                     git branch: 'main', url: 'https://github.com/hiagomoa/golang-api'
                 }
             }
