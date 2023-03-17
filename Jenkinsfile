@@ -1,26 +1,9 @@
 pipeline {
     agent any
-    parameters {
-    choice choices: ['one', 'two'], description: Teste, name: 'CHOICE'
-//     gitParameter(
-//       branch: '',
-//       branchFilter: ".*",
-//       defaultValue: "",
-//       description: '',
-//       listSize: '10',
-//       name: 'Version',
-//       quickFilterEnabled: false,
-//       selectedValue: 'NONE',
-//       sortMode: 'ASCENDING_SMART',
-//       tagFilter: "*",
-//       type: 'PT_BRANCH_TAG',
-//       useRepository: 'https://github.com/hiagomoa/golang-api')
-   }
     stages {
         stage('Clone') {
             steps {
                 script {
-                    echo "O valor do Choice: ${params.CHOICE}"
                     git branch: 'main', url: 'https://github.com/hiagomoa/golang-api'
                 }
             }
