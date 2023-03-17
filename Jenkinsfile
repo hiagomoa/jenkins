@@ -1,7 +1,6 @@
 pipeline {
     agent any
     parameters {
-    choice 
     choice choices: ['one', 'two'], description: Teste, name: 'CHOICE'
 //     gitParameter(
 //       branch: '',
