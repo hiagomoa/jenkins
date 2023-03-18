@@ -1,7 +1,7 @@
 pipeline {
     agent any
         stages {
-            stage('Parameters'){
+            stage('Param'){
                 steps {
                     script {
                     properties([
