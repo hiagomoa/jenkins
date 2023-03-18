@@ -4,7 +4,7 @@ pipeline {
             stage('Param'){
                 steps {
                     script {
-                        def param = sh(script: "python3 test.py", returnStdout: true).toString().split(",")
+                        def param = sh(script: "python3 test.py", returnStdout: true).toString().split(',')
                         echo "param: ${param}"
                         choice = input(id: 'choice', message: 'Choose one', parameters: [choice(name: 'CHOICE', choices: param, description: 'ddddddddd')])
                     }
