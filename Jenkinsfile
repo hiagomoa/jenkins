@@ -89,7 +89,6 @@ pipeline {
       steps {
         script {
           echo "Cloning... ${params.GIT_BRANCH}"
-          echo "Cloning... ${params.ENVIRONMENT}"
           git branch: 'main', url: 'https://github.com/hiagomoa/golang-api'
         }
       }
