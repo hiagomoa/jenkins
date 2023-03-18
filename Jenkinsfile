@@ -13,7 +13,7 @@ pipeline {
                         }
                         echo "${arrayExample}"
                         echo "param: ${param}/${p2}"
-                        choice = input(id: 'choice', message: 'Choose one', parameters: [choice(name: 'CHOICE', choices: param, description: 'ddddddddd')])
+                        choice = input(id: 'choice', message: 'Choose one', parameters: [choice(name: 'CHOICE', choices: arrayExample, description: 'ddddddddd')])
                     }
                 }
             }
