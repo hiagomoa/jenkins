@@ -8,7 +8,7 @@ pipeline {
                         def p2 = ['one', 'two', 'three']
                         def listCatalog = sh(script: "python3 test.py", returnStdout: true)
                         def arrayExample=[]
-                        listCatalog.split(",").each {
+                        listCatalog.split().each {
                         arrayExample << it
                         }
                         echo "${arrayExample}"
