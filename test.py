@@ -1,1 +1,1 @@
-print("Olá Mundo!")
+print("['a', 'b', 'c']")
