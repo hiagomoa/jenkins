@@ -42,8 +42,7 @@ pipeline {
                   script: [
                     classpath: [],
                     sandbox: false,
-                    script: ''
-                    '
+                    script: '''
                     if (Env.equals("dev")) {
                       return ["ami-sd2345sd", "ami-asdf245sdf", "ami-asdf3245sd"]
                     } else if (Env.equals("stage")) {
@@ -51,8 +50,7 @@ pipeline {
                     } else if (Env.equals("prod")) {
                       return ["ami-sdf34sdf", "ami-sdf34ds", "ami-sdf3sf3"]
                     }
-                    ''
-                    '
+                    '''
                   ]
                 ]
               ],
@@ -64,8 +62,7 @@ pipeline {
                 script: [$class: 'GroovyScript',
                   script: 'return["Could not get AMi Information"]',
                   script: [
-                    script: ''
-                    '
+                    script: '''
                     if (Env.equals("dev")) {
                       return ["ami-sd2345sd:  AMI with Java", "ami-asdf245sdf: AMI with Python", "ami-asdf3245sd: AMI with Groovy"]
                     } else if (Env.equals("stage")) {
@@ -73,8 +70,7 @@ pipeline {
                     } else if (Env.equals("prod")) {
                       return ["ami-sdf34sdf:  AMI with Java", "ami-sdf34ds: AMI with Python", "ami-sdf3sf3: AMI with Groovy"]
                     }
-                    ''
-                    '
+                    '''
                   ]
                 ]
               ]
@@ -93,28 +89,24 @@ pipeline {
     }
     stage('Build') {
       steps {
-        sh ''
-        '
+        sh '''
         echo "Building..."
         docker build - t hiagomoa / golang - api: $ {
           BUILD_NUMBER
         }.
-        ''
-        '
+        '''
       }
     }
     stage('Test') {
       steps {
-        sh ''
-        '
+        sh '''
         echo "Testing..."
         docker run - d - p 3000: 3000 hiagomoa / golang - api: $ {
           BUILD_NUMBER
         }
         curl localhost: 3000
         docker rm - f $(docker ps - aq)
-        ''
-        '
+        '''
       }
     }
   }
