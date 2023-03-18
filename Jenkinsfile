@@ -83,8 +83,6 @@ pipeline {
         }
       }
     }
-  }
-  stages {
     stage('Clone') {
       steps {
         script {
