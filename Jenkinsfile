@@ -1,36 +1,49 @@
 pipeline {
     agent any
     
+    parameters {
+        string(name: 'username', defaultValue: 'hiagomoa', description: 'Nome de usuário do Github')
+        string(name: 'token', defaultValue: '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', description: 'Token de autenticação do Github')
+    }
+    
     stages {
-        stage('Escolher repositório') {
+        stage('Listar repositórios') {
             steps {
                 script {
-                    def githubApiUrl = 'https://api.github.com/user/repos'
-                    def githubToken = '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'
-                    def repos = sh(script: "curl -H 'Authorization: token ${githubToken}' -s '${githubApiUrl}' | jq -r '.[].full_name'", returnStdout: true).trim().split('\n')
-                    def chosenRepo = input message: 'Escolha um repositório', parameters: [choice(choices: repos, description: 'Escolha um repositório do Github')]
-                    env.GITHUB_REPO = chosenRepo
+                    def githubApiUrl = "https://api.github.com/users/${params.username}/repos"
+                    def response = sh(script: "curl -s -H 'Authorization: token ${params.token}' $githubApiUrl", returnStdout: true)
+                    def repos = readJSON text: response
+                    
+                    def repoOptions = []
+                    for (def repo in repos) {
+                        repoOptions << repo.name
+                    }
+                    
+                    def chosenRepo = input(
+                        message: 'Qual repositório você quer?',
+                        parameters: [
+                            [$class: 'ChoiceParameterDefinition', name: 'repoName', choices: repoOptions.join('\n')]
+                        ]
+                    )
+                    
+                    def branchesUrl = "https://api.github.com/repos/${params.username}/${chosenRepo}/branches"
+                    response = sh(script: "curl -s -H 'Authorization: token ${params.token}' $branchesUrl", returnStdout: true)
+                    def branches = readJSON text: response
+                    
+                    def branchOptions = []
+                    for (def branch in branches) {
+                        branchOptions << branch.name
+                    }
+                    
+                    def chosenBranch = input(
+                        message: 'Qual branch você quer?',
+                        parameters: [
+                            [$class: 'ChoiceParameterDefinition', name: 'branchName', choices: branchOptions.join('\n')]
+                        ]
+                    )
+                    
+                    // O restante do pipeline continua aqui...
                 }
-            }
-        }
-        
-        stage('Escolher branch') {
-            steps {
-                script {
-                    def githubApiUrl = "https://api.github.com/repos/${env.GITHUB_REPO}/branches"
-                    def githubToken = 'TOKEN_AQUI'
-                    def branches = sh(script: "curl -H 'Authorization: token ${githubToken}' -s '${githubApiUrl}' | jq -r '.[].name'", returnStdout: true).trim().split('\n')
-                    def chosenBranch = input message: 'Escolha uma branch', parameters: [choice(choices: branches, description: 'Escolha uma branch do repositório selecionado')]
-                    env.GITHUB_BRANCH = chosenBranch
-                }
-            }
-        }
-        
-        stage('Build e deploy') {
-            steps {
-                echo "Repositório selecionado: ${env.GITHUB_REPO}"
-                echo "Branch selecionada: ${env.GITHUB_BRANCH}"
-                // Adicione aqui os comandos para construir e implantar o seu projeto
             }
         }
     }
