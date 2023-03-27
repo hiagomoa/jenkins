@@ -1,17 +1,15 @@
 pipeline {
     agent any
-    
-    parameters {
-        string(name: 'username', defaultValue: 'hiagomoa', description: 'Nome de usuário do Github')
-        string(name: 'token', defaultValue: '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', description: 'Token de autenticação do Github')
+    environment{
+        GITHUB_TOKEN='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'
+        GITHUB_USERNAME='hiagomoa'
     }
-    
     stages {
         stage('Listar repositórios') {
             steps {
                 script {
-                    def githubApiUrl = "https://api.github.com/users/${params.username}/repos"
-                    def response = sh(script: "curl -s -H 'Authorization: token ${params.token}' $githubApiUrl", returnStdout: true)
+                    def githubApiUrl = 'https://api.github.com/user/repos'
+                    def response = sh(script: "curl -s -H 'Authorization: token ${env.GITHUB_TOKEN}' $githubApiUrl", returnStdout: true)
                     def repos = readJSON text: response
                     
                     def repoOptions = []
@@ -26,8 +24,8 @@ pipeline {
                         ]
                     )
                     
-                    def branchesUrl = "https://api.github.com/repos/${params.username}/${chosenRepo}/branches"
-                    response = sh(script: "curl -s -H 'Authorization: token ${params.token}' $branchesUrl", returnStdout: true)
+                    def branchesUrl = "https://api.github.com/repos/${env.GITHUB_USERNAME}/${chosenRepo}/branches"
+                    response = sh(script: "curl -s -H 'Authorization: token ${env.GITHUB_TOKEN}' $branchesUrl", returnStdout: true)
                     def branches = readJSON text: response
                     
                     def branchOptions = []
