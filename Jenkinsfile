@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         GITHUB_API_URL = 'https://api.github.com/user/repos'
-        AUTHORIZATION_HEADER = "Authorization: Bearer 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"
+        AUTHORIZATION_HEADER = "Authorization: Bearer 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"
     }
 
     stages {
