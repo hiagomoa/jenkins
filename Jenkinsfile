@@ -1,50 +1,37 @@
 pipeline {
     agent any
-    parameters {
-        choice(
-            name: 'repo',
-            choices: getGithubRepos('hiagomoa', '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'),
-            description: 'Selecione o repositório para construir'
-        )
-        choice(
-            name: 'branch',
-            choices: getGithubBranches(params.repo,'hiagomoa', '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'),
-            description: 'Selecione a branch para construir'
-        )
-    }
+    
     stages {
-        stage('Build') {
+        stage('Escolher repositório') {
             steps {
-                // execute aqui os passos da construção do seu projeto
+                script {
+                    def githubApiUrl = 'https://api.github.com/user/repos'
+                    def githubToken = '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'
+                    def repos = sh(script: "curl -H 'Authorization: token ${githubToken}' -s '${githubApiUrl}' | jq -r '.[].full_name'", returnStdout: true).trim().split('\n')
+                    def chosenRepo = input message: 'Escolha um repositório', parameters: [choice(choices: repos, description: 'Escolha um repositório do Github')]
+                    env.GITHUB_REPO = chosenRepo
+                }
+            }
+        }
+        
+        stage('Escolher branch') {
+            steps {
+                script {
+                    def githubApiUrl = "https://api.github.com/repos/${env.GITHUB_REPO}/branches"
+                    def githubToken = 'TOKEN_AQUI'
+                    def branches = sh(script: "curl -H 'Authorization: token ${githubToken}' -s '${githubApiUrl}' | jq -r '.[].name'", returnStdout: true).trim().split('\n')
+                    def chosenBranch = input message: 'Escolha uma branch', parameters: [choice(choices: branches, description: 'Escolha uma branch do repositório selecionado')]
+                    env.GITHUB_BRANCH = chosenBranch
+                }
+            }
+        }
+        
+        stage('Build e deploy') {
+            steps {
+                echo "Repositório selecionado: ${env.GITHUB_REPO}"
+                echo "Branch selecionada: ${env.GITHUB_BRANCH}"
+                // Adicione aqui os comandos para construir e implantar o seu projeto
             }
         }
     }
-}
-
-def getGithubRepos(String username, String token) {
-    def url = "https://api.github.com/users/${username}/repos"
-    def connection = new URL(url).openConnection() as HttpURLConnection
-    connection.setRequestProperty('Authorization', "token ${token}")
-    connection.setRequestMethod('GET')
-
-    def response = connection.inputStream.text
-
-    def jsonSlurper = new JsonSlurper()
-    def repos = jsonSlurper.parseText(response)
-
-    return repos.collect { repo -> repo.full_name }
-}
-
-def getGithubBranches(String repo, String username, String token) {
-    def url = "https://api.github.com/repos/${repo}/branches"
-    def connection = new URL(url).openConnection() as HttpURLConnection
-    connection.setRequestProperty('Authorization', "token ${token}")
-    connection.setRequestMethod('GET')
-
-    def response = connection.inputStream.text
-
-    def jsonSlurper = new JsonSlurper()
-    def branches = jsonSlurper.parseText(response)
-
-    return branches.collect { branch -> branch.name }
 }
