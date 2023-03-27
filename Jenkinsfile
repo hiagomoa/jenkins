@@ -28,15 +28,17 @@ pipeline {
 }
 
 def getGithubRepos() {
-    def response = httpRequest(url: "https://api.github.com/user/repos?access_token=${env.GITHUB_TOKEN}")
-    def repos = []
-    if (response.status == 200) {
-        def json = readJSON(text: response.content)
-        json.each {
-            repos.add("${it['full_name']}")
-        }
-    }
-    return repos
+    def url = "https://api.github.com/users/${username}/repos"
+    def connection = new URL(url).openConnection() as HttpURLConnection
+    connection.setRequestProperty('Authorization', "token ${env.GITHUB_TOKEN}")
+    connection.setRequestMethod('GET')
+
+    def response = connection.inputStream.text
+
+    def jsonSlurper = new JsonSlurper()
+    def repos = jsonSlurper.parseText(response)
+
+    return repos.collect { repo -> repo.full_name }
 }
 
 def getGithubBranches(repo) {
